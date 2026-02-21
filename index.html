@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
+            min-height: 100vh; 
+            padding: 20px;
+            background-image: url('images/background.png'); 
+            background-size: cover; 
+            background-position: center; 
+        }
+        
+        .container { 
+            display: flex; 
+            gap: 20px; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            height: 600px; 
+            opacity: 0.9;  
+        }
+        
+        /* --- SIDEBAR --- */
+        .sidebar { 
+            background: linear-gradient(45deg, #000000 0%, #dfc00c 100%); 
+            padding: 20px; 
+            width: 220px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18); 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            border: 2px solid #000000; 
+            border-radius: 12px;      
+        }
+        
+        .sidebar-title { 
+            font-size: 18px; 
+            font-weight: 700; 
+            color: #333; 
+            margin-bottom: 6px; 
+            text-align: center;
+        }    
+        
+        /* --- BUTONLAR --- */
+        .btn-popup {
+            display: inline-block;
+            padding: 12px 25px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 15px;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-decoration: none;
+            letter-spacing: 2px; 
+            text-align: center;
+            color: #000000;
+            background: linear-gradient(90deg, #dfc00c, #ffea70, #dfc00c);
+            background-size: 200% auto;
+            border: 2px solid #dfc00c;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(223, 192, 12, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+
+        .btn-popup:hover {
+            background: #000000;
+            color: #dfc00c;
+            border-color: #dfc00c;
+            box-shadow: 0 0 20px rgba(223, 192, 12, 0.8), 0 0 40px rgba(223, 192, 12, 0.5);
+            transform: translateY(-5px) scale(1.05); 
+        }
+
+        .btn-popup:active {
+            transform: translateY(2px) scale(0.95); 
+            box-shadow: 0 0 10px rgba(223, 192, 12, 0.4);
+        }
+
+        /* --- İÇERİK ALANI --- */
+        .content-area { 
+            flex: 1;    
+            background: linear-gradient(15deg, #000000 0%, #dfc00c 100%);  
+            padding: 32px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12); 
+            overflow: auto; 
+            border: 2px solid #000000; 
+            border-radius: 12px; 
+        }
+        
+        .frame { display: none; }
+        .frame.active { display: block; animation: fadeIn .25s ease; }
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        
+        .frame h2 { 
+            color: #fbff00; 
+            margin-bottom: 20px; 
+            font-size: 26px;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.567);
+   
+        }
+        
+        .frame p { 
+            color: #000000; 
+            line-height: 1.6; 
+            margin-bottom: 15px; 
+            font-family: 'Courier New', Courier, monospace; 
+            font-weight: bold;
+        }
+
+        /* --- OYUN PORTFOLYO IZGARASI (YENİ EKLENEN KISIM) --- */
+        .games-grid {
+            display: flex;
+            justify-content: center; /* Ortalar */
+            gap: 30px; /* Oyunlar arasındaki şık boşluk */
+            flex-wrap: wrap; /* Ekrana sığmazsa alt satıra geçer (Responsive) */
+            margin: 20px 0;
+        }
+
+        .portfolio-container {
+            position: relative; 
+            flex: 1 1 250px; /* Genişliği esnek yapar, minimum 250px tutar */
+            max-width: 300px; /* Çok geniş ekranda devasa olmasını engeller */
+            border-radius: 12px; 
+            overflow: hidden; 
+            border: 2px solid #dfc00c; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+        }
+
+        .game-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+         
+        }
+
+        .game-caption {
+            margin-top: 10px;
+            text-align: center;
+            font-weight: 800;
+            color: #fbff00; 
+            backface-visibility: hidden;
+            padding: 6px 10px;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.567);
+        }
+        .game-rankinfo {
+            margin-top: 10px;
+            font-size: 12px;
+            text-align: center;
+            font-weight: 800;
+            color: #f6fa09ef; 
+            backface-visibility: hidden;
+            padding: 0px 10px;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.567);
+        }
+
+        .base-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;      /* RESMİ KAREYE GÖRE KESER (Boşluk bırakmaz, yaymaz) */
+            display: block;
+        }
+
+        .overlay-content {
+            position: absolute; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5); 
+            opacity: 1; 
+        }
+
+        .portfolio-container:hover .base-image {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+
+.content-area::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Scroll çubuğunun arka planı (Kanal/Track) */
+.content-area::-webkit-scrollbar-track {
+    background: #000000; 
+    border-radius: 10px;
+}
+
+/* Kaydırdığın çubuğun kendisi (Handle/Thumb) */
+.content-area::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #dfc00c, #ffea70);
+    border-radius: 10px;
+    border: 2px solid #000000; /* Çubuğun etrafına siyah boşluk bırakır */
+}
+
+/* Üzerine gelince çubuğun parlaması */
+.content-area::-webkit-scrollbar-thumb:hover {
+    background: #ffea70;
+}
+
+        /* --- RESPONSIVE AYARLAR --- */
+        @media (max-width: 800px){ 
+            .container { flex-direction: column; height: auto; } 
+            .sidebar { width: 100%; } 
+            .content-area { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; color: #000000; text-shadow: 0 0 10px rgba(223, 192, 12, 0.8); margin-bottom: 30px;">retseJwolleY's Portfolio</h1>
+    <div class="container">
+
+        <div class="sidebar">
+            
+            <div style="font-family: 'Courier New', monospace; color: #000000; font-weight: bold; text-align: center; margin-top: 10px; margin-bottom: 10px;">
+                <span id="count">...</span> VISITS 
+            </div>
+
+            <script>
+            function cb(response) {
+                document.getElementById('count').innerText = response.value;
+            }
+            </script>
+            <script async src="https://api.countapi.xyz/hit/retsejwolley.github.io/visits?callback=cb"></script>
+            
+            <div class="sidebar-title">✧ Commissions ✧ </div>
+            <button class="btn-popup" data-frame="bio">Biography</button>
+
+            <div class="sidebar-title">✧ My Socials ✧</div>
+            <a href="https://www.youtube.com/@retsejwolley?sub_confirmation=1" target="_blank" rel="noopener" class="btn-popup">YouTube</a>
+            <a href="https://discord.com/invite/xvadzVWcD9" target="_blank" rel="noopener" class="btn-popup">Discord</a>
+            <a href="https://www.tiktok.com/@retsejwolley" target="_blank" rel="noopener" class="btn-popup">Tiktok</a>
+            <a href="https://www.roblox.com/communities/32774094/X-Raptor-Studios#!/about" target="_blank" rel="noopener" class="btn-popup">Roblox Community</a>
+        </div>
+
+        <div class="content-area">
+            <div id="bio" class="frame active">
+                
+                <h2 style="text-align: center; width: 100%;">✧ Biography ✧</h2>
+                <p style="text-align: center; width: 100%;">Hi, I'm retseJwolleY,</p>
+                <p style="text-align: center; width: 100%;">▶ I have worked on several group projects in Roblox as a hybrid scripter.</p>
+                <p style="text-align: center; width: 100%;">▶ I have 3+ years of experience, and for now, I’m focused on growing my own games and communities.</p>
+                <p style="text-align: center; width: 100%;">▶ The projects I have worked on were mainly focused on combat-based games, simulators, AI NPC systems, scavenger hunts, roleplay, tycoons, and similar themes.</p>
+                <p style="text-align: center; width: 100%;">Thanks for taking the time to read my bio.</p>
+                
+                <h2 style="text-align: center; width: 100%; margin-top: 40px;">✧ Games ✧</h2>
+                
+                <div class="games-grid">
+                    
+                    <div class="game-item">
+                        <div class="portfolio-container">
+                            <img src="images/geargodtower.png" alt="Gear God Tower" class="base-image">
+                            <div class="overlay-content">
+                                <a href="roblox://placeId=119170120170390" target="_blank" rel="noopener" class="btn-popup">
+                                    ▶ Play
+                                </a>
+                            </div>
+                        </div>
+                        <div class="game-caption">Gear God Tower</div>
+                        <div class="game-rankinfo">Rank: Owner</div>
+                    </div>
+
+                    <div class="game-item">
+                        <div class="portfolio-container">
+                            <img src="images/sadnessCombat.png" alt="Sadness Combat" class="base-image">
+                            <div class="overlay-content">
+                                <a href="roblox://placeId=8252887090" target="_blank" rel="noopener" class="btn-popup">
+                                    ▶ Play
+                                </a>
+                            </div>
+                        </div>
+                        <div class="game-caption">Sadness Combat</div>
+                         <div class="game-rankinfo">Rank: Co-Owner / Head Scripter</div>
+                    </div>
+
+                    <div class="game-item">
+                        <div class="portfolio-container">
+                            <img src="images/fastbears.png" alt="Fast Bears" class="base-image">
+                            <div class="overlay-content">
+                                <a href="roblox://placeId=77067363140184" target="_blank" rel="noopener" class="btn-popup">
+                                    ▶ Play
+                                </a>
+                            </div>
+                        </div>
+                        <div class="game-caption">Fastbear's Neighborhood</div>
+                        <div class="game-rankinfo">Rank: Co-Owner / Solo Developed</div>
+                    </div>
+
+
+                      <div class="game-item">
+                        <div class="portfolio-container">
+                            <img src="images/ShiningStands.png" alt="Shining Stands" class="base-image">
+                            <div class="overlay-content">
+                                <a href="roblox://placeId=1756594318" target="_blank" rel="noopener" class="btn-popup">
+                                    ▶ Play
+                                </a>
+                            </div>
+                        </div>
+                        <div class="game-caption">Shining Stands</div>
+                        <div class="game-rankinfo">Rank: Head Scripter / In development</div>
+                    </div>
+
+                </div>
+                <h2 style="text-align: center; width: 100%; margin-top: 40px;">✧ Small Works ✧</h2>
+                <p style="text-align: center; width: 100%; font-size: 21px;">✧ Showcase ✧</p>
+
+                <iframe style="width: 100%; height: 400px; border-radius: 12px; border: 2px solid #dfc00c;" 
+                        src="https://www.youtube.com/embed/videoseries?si=SCaeGl0UkiM5wDPq&amp;list=PLh3j0TlPu0U-FbZCPTbeVl7zJByE2Xf9g" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                </iframe>
+
+                <p style="text-align: center; width: 100%; font-size: 21px;">✧ Devlogs ✧</p>
+
+                <iframe style="width: 100%; height: 400px; border-radius: 12px; border: 2px solid #dfc00c;" 
+                        src="https://www.youtube.com/embed/videoseries?si=K0sG9niQzn9mnhMR&amp;list=PLh3j0TlPu0U8EkILVjZxU6WT4X34uidYR" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                </iframe>
+                
+            </div>
+        </div>
+        
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
