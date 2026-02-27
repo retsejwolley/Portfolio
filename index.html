@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Portfolio</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -48,7 +51,12 @@
         
         /* --- BUTONLAR --- */
         .btn-popup {
-            display: inline-block;
+            /* İkon ve Yazı Hizalaması (YENİ) */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            
             padding: 12px 25px;
             font-family: 'Courier New', Courier, monospace;
             font-size: 15px;
@@ -56,7 +64,6 @@
             text-transform: uppercase;
             text-decoration: none;
             letter-spacing: 2px; 
-            text-align: center;
             color: #000000;
             background: linear-gradient(90deg, #dfc00c, #ffea70, #dfc00c);
             background-size: 200% auto;
@@ -110,19 +117,19 @@
             font-weight: bold;
         }
 
-        /* --- OYUN PORTFOLYO IZGARASI (YENİ EKLENEN KISIM) --- */
+        /* --- OYUN PORTFOLYO IZGARASI --- */
         .games-grid {
             display: flex;
-            justify-content: center; /* Ortalar */
-            gap: 30px; /* Oyunlar arasındaki şık boşluk */
-            flex-wrap: wrap; /* Ekrana sığmazsa alt satıra geçer (Responsive) */
+            justify-content: center; 
+            gap: 30px; 
+            flex-wrap: wrap; 
             margin: 20px 0;
         }
 
         .portfolio-container {
             position: relative; 
-            flex: 1 1 250px; /* Genişliği esnek yapar, minimum 250px tutar */
-            max-width: 300px; /* Çok geniş ekranda devasa olmasını engeller */
+            flex: 1 1 250px; 
+            max-width: 300px; 
             border-radius: 12px; 
             overflow: hidden; 
             border: 2px solid #dfc00c; 
@@ -159,7 +166,7 @@
         .base-image {
             width: 100%;
             height: 100%;
-            object-fit: cover;      /* RESMİ KAREYE GÖRE KESER (Boşluk bırakmaz, yaymaz) */
+            object-fit: cover;      
             display: block;
         }
 
@@ -181,27 +188,24 @@
             transition: transform 0.3s ease;
         }
 
-.content-area::-webkit-scrollbar {
-    width: 10px;
-}
+        .content-area::-webkit-scrollbar {
+            width: 10px;
+        }
 
-/* Scroll çubuğunun arka planı (Kanal/Track) */
-.content-area::-webkit-scrollbar-track {
-    background: #000000; 
-    border-radius: 10px;
-}
+        .content-area::-webkit-scrollbar-track {
+            background: #000000; 
+            border-radius: 10px;
+        }
 
-/* Kaydırdığın çubuğun kendisi (Handle/Thumb) */
-.content-area::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #dfc00c, #ffea70);
-    border-radius: 10px;
-    border: 2px solid #000000; /* Çubuğun etrafına siyah boşluk bırakır */
-}
+        .content-area::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #dfc00c, #ffea70);
+            border-radius: 10px;
+            border: 2px solid #000000; 
+        }
 
-/* Üzerine gelince çubuğun parlaması */
-.content-area::-webkit-scrollbar-thumb:hover {
-    background: #ffea70;
-}
+        .content-area::-webkit-scrollbar-thumb:hover {
+            background: #ffea70;
+        }
 
         /* --- RESPONSIVE AYARLAR --- */
         @media (max-width: 800px){ 
@@ -218,24 +222,61 @@
         <div class="sidebar">
             
             <div style="font-family: 'Courier New', monospace; color: #000000; font-weight: bold; text-align: center; margin-top: 10px; margin-bottom: 10px;">
-                <span id="count">...</span> VISITS 
+                <i class="fa-solid fa-star"></i> Visits:  <span id="count">...</span>
             </div>
 
             <script>
-            function cb(response) {
-                document.getElementById('count').innerText = response.value;
-            }
+                var IsLogged = localStorage.getItem("IsLogged");
+
+                if (IsLogged === "true") {
+                    console.log("User logged in before, showing count without incrementing.");
+                    
+                    fetch('https://api.counterapi.dev/v1/retsejwolley_portfolio/visits/')
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('count').innerText = data.count;
+                        })
+                        .catch(error => {
+                            console.error('counterapi error:', error);
+                            document.getElementById('count').innerText = "?";
+                        });
+
+                } else {
+                    console.log("New user, incrementing counter.");
+                    
+                    fetch('https://api.counterapi.dev/v1/retsejwolley_portfolio/visits/up')
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('count').innerText = data.count;
+                            localStorage.setItem("IsLogged", "true");
+                        })
+                        .catch(error => {
+                            console.error('Counter API error:', error);
+                            document.getElementById('count').innerText = "?";
+                        });
+                }
+
+            
             </script>
-            <script async src="https://api.countapi.xyz/hit/retsejwolley.github.io/visits?callback=cb"></script>
             
             <div class="sidebar-title">✧ Commissions ✧ </div>
-            <button class="btn-popup" data-frame="bio">Biography</button>
+            <button class="btn-popup" data-frame="bio">
+                <i class="fa-solid fa-user"></i> Biography
+            </button>
 
             <div class="sidebar-title">✧ My Socials ✧</div>
-            <a href="https://www.youtube.com/@retsejwolley?sub_confirmation=1" target="_blank" rel="noopener" class="btn-popup">YouTube</a>
-            <a href="https://discord.com/invite/xvadzVWcD9" target="_blank" rel="noopener" class="btn-popup">Discord</a>
-            <a href="https://www.tiktok.com/@retsejwolley" target="_blank" rel="noopener" class="btn-popup">Tiktok</a>
-            <a href="https://www.roblox.com/communities/32774094/X-Raptor-Studios#!/about" target="_blank" rel="noopener" class="btn-popup">Roblox Community</a>
+            <a href="https://www.youtube.com/@retsejwolley?sub_confirmation=1" target="_blank" rel="noopener" class="btn-popup">
+                <i class="fa-brands fa-youtube"></i> YouTube
+            </a>
+            <a href="https://discord.com/invite/xvadzVWcD9" target="_blank" rel="noopener" class="btn-popup">
+                <i class="fa-brands fa-discord"></i> Discord
+            </a>
+            <a href="https://www.tiktok.com/@retsejwolley" target="_blank" rel="noopener" class="btn-popup">
+                <i class="fa-brands fa-tiktok"></i> Tiktok
+            </a>
+            <a href="https://www.roblox.com/communities/32774094/X-Raptor-Studios#!/about" target="_blank" rel="noopener" class="btn-popup">
+                <i class="fa-solid fa-gamepad"></i> Roblox Community
+            </a>
         </div>
 
         <div class="content-area">
@@ -243,7 +284,7 @@
                 
                 <h2 style="text-align: center; width: 100%;">✧ Biography ✧</h2>
                 <p style="text-align: center; width: 100%;">Hi, I'm retseJwolleY,</p>
-                <p style="text-align: center; width: 100%;">▶ I have worked on several group projects in Roblox as a hybrid scripter.</p>
+                <p style="text-align: center; width: 100%;">▶ I have worked on several group & solo projects in Roblox as a hybrid scripter.</p>
                 <p style="text-align: center; width: 100%;">▶ I have 3+ years of experience, and for now, I’m focused on growing my own games and communities.</p>
                 <p style="text-align: center; width: 100%;">▶ The projects I have worked on were mainly focused on combat-based games, simulators, AI NPC systems, scavenger hunts, roleplay, tycoons, and similar themes.</p>
                 <p style="text-align: center; width: 100%;">Thanks for taking the time to read my bio.</p>
@@ -262,7 +303,7 @@
                             </div>
                         </div>
                         <div class="game-caption">Gear God Tower</div>
-                        <div class="game-rankinfo">Rank: Owner</div>
+                        <div class="game-rankinfo">Rank: Owner / Solo Developed</div>
                     </div>
 
                     <div class="game-item">
@@ -288,7 +329,7 @@
                             </div>
                         </div>
                         <div class="game-caption">Fastbear's Neighborhood</div>
-                        <div class="game-rankinfo">Rank: Co-Owner / Solo Developed</div>
+                        <div class="game-rankinfo">Rank: Owner / Solo Developed</div>
                     </div>
 
 
@@ -302,7 +343,7 @@
                             </div>
                         </div>
                         <div class="game-caption">Shining Stands</div>
-                        <div class="game-rankinfo">Rank: Head Scripter / In development</div>
+                        <div class="game-rankinfo">Rank: Owner / Solo Developing (In development) </div>
                     </div>
 
                 </div>
